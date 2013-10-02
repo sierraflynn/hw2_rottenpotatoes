@@ -9,11 +9,10 @@ class MoviesController < ApplicationController
   def index
     sortby = params[:view] #added ass2.b
     if sortby == 'title'
-      @movies = Movie.find(:all, :order => 'movies.title')
+      @movies = Movie.find(:all, :order => 'movies.title') ; end
     elsif sortby == 'date'
-      @movies = Movie.find(:all, :order => 'movies.release_date')
-    else @movies = Movie.all
-    end
+      @movies = Movie.find(:all, :order => 'movies.release_date') ; end
+    else @movies = Movie.all ; end
   end
 
   def new
