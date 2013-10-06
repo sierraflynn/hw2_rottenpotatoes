@@ -7,13 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sortby = params[:view] #added ass2.b
-    if sortby == 'title'
-      @movies = Movie.find(:all, :order => 'movies.title')
-    elsif sortby == 'date'
-      @movies = Movie.find(:all, :order => 'movies.release_date')
-    else @movies = Movie.all
+    sortby = params[:order] #added ass2.b 
+    if sortby == 'movies.title' 
+      @titlestyle = 'hilite'
+    elsif sortby == 'movies.release_date'
+      @datestyle = 'hilite'
     end
+    @movies = Movie.find(:all, :order => sortby)
   end
 
   def new
