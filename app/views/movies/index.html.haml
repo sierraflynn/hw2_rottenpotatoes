@@ -1,7 +1,19 @@
 -#  This file is app/views/movies/index.html.haml
 -# http://haml.info/tutorial.html at adding attributes
--#anything want to add to path goes into "params"
+-# anything want to add to path goes into "params"
 %h1 All Movies
+
+-# :ratings=>{"G"=>"1", "PG"=>"1", "PG-13"=>"1", "R"=>"1"}
+
+-#http://pastebin.com/vpPqkWMb
+-#http://stackoverflow.com/questions/14592857/check-box-tag-pre-checked-conditional-on-values-in-array
+= form_tag movies_path, :method => :get do
+  Include:
+  - @all_ratings.each do |rating|
+    = rating
+    = check_box_tag "ratings[#{rating}]", 1, @filterby.include?(rating) ? true : false
+  - if params[:ratings] == nil ; params[:ratings] = {} ; end
+  = submit_tag 'Refresh'
 
 %table#movies
   %thead

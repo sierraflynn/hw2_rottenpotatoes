@@ -7,13 +7,25 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sortby = params[:order] #added ass2.b 
+    #asgn.1.b.
+    #asgn2.2
+    @all_ratings = Movie.all_ratings
+    sortby = params[:order]
+    filterby = params[:ratings] #|| {} #so no nil case
+    if filterby == nil
+      @filterby = @all_ratings
+    else
+      @filterby = filterby.keys
+    end
+    #@filterby = @filterby.keys || @all_ratings #so no nil case
+    #@filterby = @all_ratings
     if sortby == 'movies.title' 
       @titlestyle = 'hilite'
     elsif sortby == 'movies.release_date'
       @datestyle = 'hilite'
     end
-    @movies = Movie.find(:all, :order => sortby)#params[:order])
+    #given and modified
+    @movies = Movie.where(:rating => @filterby).find(:all, :order => sortby) # || []
   end
 
   def new
