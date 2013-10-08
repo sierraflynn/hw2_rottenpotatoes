@@ -7,25 +7,26 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #asgn.1.b.
-    #asgn2.2
-    @all_ratings = Movie.all_ratings
-    sortby = params[:order]
-    filterby = params[:ratings] #|| {} #so no nil case
-    if filterby == nil
+    @all_ratings = Movie.all_ratings #used in the view
+
+    #filter by ratings: default is ALL
+    if params[:ratings] == nil #if no checkboxes clicked, no filter
       @filterby = @all_ratings
-    else
-      @filterby = filterby.keys
+    else #if checkboxes clicked, filter by ratings
+      @filterby = params[:ratings].keys 
     end
-    #@filterby = @filterby.keys || @all_ratings #so no nil case
-    #@filterby = @all_ratings
-    if sortby == 'movies.title' 
+
+    #sort by order: default is none (by DB id #)
+    if params[:order] == 'movies.title' 
       @titlestyle = 'hilite'
-    elsif sortby == 'movies.release_date'
+    elsif params[:order] == 'movies.release_date'
       @datestyle = 'hilite'
     end
-    #given and modified
-    @movies = Movie.where(:rating => @filterby).find(:all, :order => sortby) # || []
+
+    #sort and filter list of movies for the view
+    @movies = Movie.where(:rating => @filterby).find(:all, :order => params[:order])
+
+    ensure_table_filters
   end
 
   def new
@@ -54,6 +55,37 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+
+#testing!!!
+#https://github.com/twalker/hw2_rottenpotatoes/blob/master/app/controllers/movies_controller.rb
+  private
+  def ensure_table_filters
+    session[:custom] = {} if session[:custom].nil?
+    if params[:order] != session[:custom][:order] || params[:ratings] != session[:custom][:ratings]
+      needs_redirect = true
+    end
+    session[:custom][:order] = params[:order] unless params[:order].nil?
+    session[:custom][:ratings] = params[:ratings] unless params[:ratings].nil?
+    redirect_to movies_path(session[:custom]) if needs_redirect
+  end
+
+  def blah
+    #determine session's custom settings
+    if session[:custom] == nil #initialize
+      session[:custom] = {}
+    end
+    #if session is not holding current settings, 
+    #redirect and set correct settings if needed
+    if session[:custom][:order] != params[:order] || session[:custom][:ratings] != params[:ratings]
+      if session[:custom][:order] != nil
+        session[:custom][:order] = params[:order]
+      end
+      if session[:custom][:ratings] != nil
+        session[:custom][:ratings] = params[:ratings]
+      end
+      redirect_to movies_path(session[:custom])
+    end
   end
 
 end

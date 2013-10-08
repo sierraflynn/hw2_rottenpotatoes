@@ -7,12 +7,13 @@
 
 -#http://pastebin.com/vpPqkWMb
 -#http://stackoverflow.com/questions/14592857/check-box-tag-pre-checked-conditional-on-values-in-array
+-#  = hidden_field :order, params[:order]
+-# check_box is checked (true) if current filter contains the rating
 = form_tag movies_path, :method => :get do
   Include:
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", 1, params[:ratings].include?(rating) ? true : false
-  - if params[:ratings] == nil ; params[:ratings] = {} ; end
+    = check_box_tag "ratings[#{rating}]", 1, @filterby.include?(rating) ? true : false
   = submit_tag 'Refresh'
 
 %table#movies
