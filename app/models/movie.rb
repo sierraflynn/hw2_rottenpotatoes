@@ -3,7 +3,7 @@ class Movie < ActiveRecord::Base
   #asgn2.2
   def Movie.all_ratings #class method of Movie
     all_ratings = [] #local variable, valid only in this method
-    Movies.all.each do |movie|
+    Movie.all.each do |movie|
       all_ratings.push(movie.rating)
     end
     all_ratings = all_ratings.sort.uniq
