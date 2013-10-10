@@ -7,16 +7,16 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = Movie.all_ratings #used in the view
+    @all_ratings = Movie.all_ratings #instance var used in the view
 
-    #filter by ratings: default is ALL
+    #filter by ratings: default/initially is ALL
     if params[:ratings] == nil #if no checkboxes clicked, no filter
       @filterby = @all_ratings
     else #if checkboxes clicked, filter by ratings
       @filterby = params[:ratings].keys 
     end
 
-    #sort by order: default is none (by DB id #)
+    #sort by order: default is sort by DB id #
     if params[:order] == 'movies.title' 
       @titlestyle = 'hilite'
     elsif params[:order] == 'movies.release_date'
@@ -26,7 +26,8 @@ class MoviesController < ApplicationController
     #sort and filter list of movies for the view
     @movies = Movie.where(:rating => @filterby).find(:all, :order => params[:order])
 
-    ensure_table_filters
+    #save/update the session
+    save_session
   end
 
   def new
@@ -57,35 +58,31 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
-#testing!!!
-#https://github.com/twalker/hw2_rottenpotatoes/blob/master/app/controllers/movies_controller.rb
-  private
-  def ensure_table_filters
-    session[:custom] = {} if session[:custom].nil?
-    if params[:order] != session[:custom][:order] || params[:ratings] != session[:custom][:ratings]
-      needs_redirect = true
-    end
-    session[:custom][:order] = params[:order] unless params[:order].nil?
-    session[:custom][:ratings] = params[:ratings] unless params[:ratings].nil?
-    redirect_to movies_path(session[:custom]) if needs_redirect
-  end
-
-  def blah
-    #determine session's custom settings
-    if session[:custom] == nil #initialize
+#got this idea from https://github.com/twalker/hw2_rottenpotatoes/blob/master/app/controllers/movies_controller.rb
+  def save_session
+    #first page visit, initialize
+    if session[:custom] == nil
       session[:custom] = {}
     end
     #if session is not holding current settings, 
-    #redirect and set correct settings if needed
+    #set correct settings and redirect; add the customizations in
+    #the session to the URI path on the index page. By passing
+    #movies_path a hash, params[] will be updated (& what you see 
+    #in the URI). This will go through afer every new customization.
     if session[:custom][:order] != params[:order] || session[:custom][:ratings] != params[:ratings]
-      if session[:custom][:order] != nil
-        session[:custom][:order] = params[:order]
-      end
-      if session[:custom][:ratings] != nil
-        session[:custom][:ratings] = params[:ratings]
-      end
-      redirect_to movies_path(session[:custom])
+       #if user deselected all ratings, don't save over the session;
+       #reuse previous selections instead
+        set_session_parameter(:order)
+        set_session_parameter(:ratings)
+        redirect_to movies_path(session[:custom])
     end
   end
+
+  def set_session_parameter(par)
+    if params[par] != nil
+      session[:custom][par] = params[par]
+    end
+  end
+#If the user explicitly includes new sorting/filtering settings in params[], the values stored in the session should not override them. On the contrary, the new settings should be remembered in the session. 
 
 end

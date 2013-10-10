@@ -1,11 +1,10 @@
 -#  This file is app/views/movies/index.html.haml
--# http://haml.info/tutorial.html at adding attributes
--# anything want to add to path goes into "params"
+
 %h1 All Movies
 -#http://pastebin.com/vpPqkWMb
--#http://stackoverflow.com/questions/14592857/check-box-tag-pre-checked-conditional-on-values-in-array
--#  = hidden_field :order, params[:order]
+-#pre-checking checkboxes: http://stackoverflow.com/questions/14592857/check-box-tag-pre-checked-conditional-on-values-in-array
 -# check_box is checked (true) if current filter contains the rating
+-# check_box_tag name, key, checked
 = form_tag movies_path, :method => :get do
   Include:
   - @all_ratings.each do |rating|
@@ -13,12 +12,13 @@
     = check_box_tag "ratings[#{rating}]", 1, @filterby.include?(rating) ? true : false
   = submit_tag 'Refresh'
 
+-# http://haml.info/tutorial.html for how to add class attributes
 %table#movies
   %thead
     %tr
       %th{:class => @titlestyle}= link_to "Movie Title", movies_path(:order => "movies.title", :ratings => params[:ratings]), :id => "title_header"
       %th Rating
-      %th{:class => @datestyle}= link_to "Release Date", movies_path(:order => "movies.release_date", :ratings => params[:ratings]), :id => "title_header"
+      %th{:class => @datestyle}= link_to "Release Date", movies_path(:order => "movies.release_date", :ratings => params[:ratings]), :id => "date_header"
       %th More Info
   %tbody
     - @movies.each do |movie|
