@@ -62,25 +62,26 @@ class MoviesController < ApplicationController
 #got this idea from https://github.com/twalker/hw2_rottenpotatoes/blob/master/app/controllers/movies_controller.rb
   def save_session
     #first page visit, initialize custom hash
-    session[:order] = {} unless session[:order].nil?
-    session[:ratings] = {} unless session[:ratings].nil?
+    if session[:custom] == nil
+      session[:custom] = {}
+    end
     #if session is not holding current settings, 
     #set correct settings and redirect; add the customizations in
     #the session to the URI path on the index page. By passing
     #movies_path a hash, params[] will be updated (& what you see 
     #in the URI). This will go through afer every new customization.
-    if session[:order] != params[:order] || session[:ratings] != params[:ratings]
+    if session[:custom][:order] != params[:order] || session[:custom][:ratings] != params[:ratings]
        #if user deselected all ratings, don't save over the session;
        #reuse previous selections instead
         set_session_parameter(:order)
         set_session_parameter(:ratings)
-        redirect_to movies_path(session[:order, :ratings])
+        redirect_to movies_path(session[:custom])
     end
   end
 
   def set_session_parameter(par)
     if params[par] != nil
-      session[par] = params[par]
+      session[:custom][par] = params[par]
     end
   end
 #If the user explicitly includes new sorting/filtering settings in params[], the values stored in the session should not override them. On the contrary, the new settings should be remembered in the session. 

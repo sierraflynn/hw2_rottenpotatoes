@@ -75,6 +75,7 @@ class MoviesController < ApplicationController
        #reuse previous selections instead
         set_session_parameter(:order)
         set_session_parameter(:ratings)
+        flash.keep #to save any messages in the flash
         redirect_to movies_path(session[:custom])
     end
   end
