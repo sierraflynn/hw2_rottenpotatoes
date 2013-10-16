@@ -17,6 +17,7 @@ class MoviesController < ApplicationController
     end
 
     #sort by order: default is sort by DB id #
+    #set style of sorted list header
     if params[:order] == 'movies.title' 
       @titlestyle = 'hilite'
     elsif params[:order] == 'movies.release_date'
@@ -60,7 +61,7 @@ class MoviesController < ApplicationController
 
 #got this idea from https://github.com/twalker/hw2_rottenpotatoes/blob/master/app/controllers/movies_controller.rb
   def save_session
-    #first page visit, initialize
+    #first page visit, initialize custom hash
     if session[:custom] == nil
       session[:custom] = {}
     end

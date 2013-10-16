@@ -5,6 +5,7 @@
 -#pre-checking checkboxes: http://stackoverflow.com/questions/14592857/check-box-tag-pre-checked-conditional-on-values-in-array
 -# check_box is checked (true) if current filter contains the rating
 -# check_box_tag name, key, checked
+-#create a form to "get" from movies_path
 = form_tag movies_path, :method => :get do
   Include:
   - @all_ratings.each do |rating|
@@ -12,7 +13,7 @@
     = check_box_tag "ratings[#{rating}]", 1, @filterby.include?(rating) ? true : false
   = submit_tag 'Refresh'
 
--# http://haml.info/tutorial.html for adding class attributes
+-# http://haml.info/tutorial.html for how to add class attributes
 %table#movies
   %thead
     %tr
